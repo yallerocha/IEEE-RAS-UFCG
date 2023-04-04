@@ -26,8 +26,8 @@ void blink(byte LED, int PERIODO, int TEMPO){
   
   for(int i = 0; i < FREQUENCIA; i++){
     digitalWrite(LED, HIGH);
-	delay(PERIODO / 2);
+    delay(PERIODO / 2);
     digitalWrite(LED, LOW);
-  	delay(PERIODO / 2);
+    delay(PERIODO / 2);
   }
 }
