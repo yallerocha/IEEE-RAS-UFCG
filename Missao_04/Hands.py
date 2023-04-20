@@ -37,7 +37,7 @@ while True:
                     if pontos[x][1] < pontos[x-2][1]:
                         contador +=1
 
-        cv2.rectangle(img, (80, 10), (200,110), (255, 0, 0), -1)
+        cv2.rectangle(img, (80, 10), (300,110), (255, 0, 0), -1)
         cv2.putText(img,str(contador),(100,100),cv2.FONT_HERSHEY_SIMPLEX,4,(255,255,255),5)
             
 
