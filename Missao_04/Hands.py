@@ -15,8 +15,7 @@ class HandNumbers:
             frameRGB = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
             results = Hands.process(frameRGB)
             height, width, _  = frame.shape
-            handsLandmarks = results.multi_hand_landmarks
-            fingersTips = [8, 12, 16, 20] 
+            handsLandmarks = results.multi_hand_landmarks 
 
             if handsLandmarks:
                 raisedFingers = 0
@@ -26,11 +25,12 @@ class HandNumbers:
                         world_x, world_y = int(cord.x * width), int(cord.y * height)
                         keyPoints.append((world_x, world_y))
                     
-                    if self.handUp(keyPoints):
-                        mpDwaw.draw_landmarks(frame, Landmarks, hands.HAND_CONNECTIONS)         
-
+                    if self.__handUp(keyPoints):
+                        mpDwaw.draw_landmarks(frame, Landmarks, hands.HAND_CONNECTIONS)
+                        
+                        fingersTips = [8, 12, 16, 20]         
                         for tip in fingersTips:
-                            if self.fingerUp(keyPoints,tip):
+                            if self.__fingerUp(keyPoints,tip):
                                 raisedFingers += 1
                     
                         if keyPoints[4][0] < keyPoints[17][0]:
@@ -40,14 +40,14 @@ class HandNumbers:
                             if keyPoints[4][0] > keyPoints[3][0]:
                                 raisedFingers += 1
 
-                cv2.rectangle(frame, (80, 10), (300, 110), (255, 0, 0), -1)
+                cv2.rectangle(frame, (80, 10), (300, 110), (255, 255, 255), -1)
                 cv2.putText(frame, str(raisedFingers), (100, 100), 
-                            cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 5)
+                            cv2.FONT_HERSHEY_DUPLEX, 4, (0, 0, 255), 5)
 
             cv2.imshow('Frame', frame)
             cv2.waitKey(1)
 
-    def handUp(self, keyPoints):
+    def __handUp(self, keyPoints):
             if keyPoints[0][1] < keyPoints[2][1]:
                 return False
             elif keyPoints[1][1] < keyPoints[17][1]:
@@ -55,13 +55,12 @@ class HandNumbers:
             else:
                 return True
 
-    def fingerUp(self, keyPoints, tip):
+    def __fingerUp(self, keyPoints, tip):
         if keyPoints[tip][1] < keyPoints[tip-2][1]:
             return True
         else:
             return False
         
-
 a = HandNumbers()
 a.start(0)
 
