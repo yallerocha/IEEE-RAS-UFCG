@@ -21,8 +21,8 @@ while True:
             
             keyPoints = []
             for cord in Landmarks.landmark:
-                cx, cy = int(cord.x * width), int(cord.y * height)
-                keyPoints.append((cx, cy)) 
+                world_x, world_y = int(cord.x * width), int(cord.y * height)
+                keyPoints.append((world_x, world_y)) 
                         
             fingersTips = [8, 12, 16, 20]  
             for tip in fingersTips:
