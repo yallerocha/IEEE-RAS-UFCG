@@ -1,57 +1,44 @@
 import cv2
 import mediapipe as mp
 
-webCam = cv2.VideoCapture(0)
+video = cv2.VideoCapture(0)
 
 hands = mp.solutions.hands
 Hands = hands.Hands(max_num_hands=2)
 mpDwaw = mp.solutions.drawing_utils
 
 while True:
-    success, img = webCam.read()
-    frameRGB = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+    success, frame = video.read()
+    frameRGB = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
     results = Hands.process(frameRGB)
+    height, width, _  = frame.shape
     handPoints = results.multi_hand_landmarks
-    h, w, _ = img.shape
 
     if handPoints:
-        contador = 0
+        raisedFingers = 0
         for points in handPoints:
-            mpDwaw.draw_landmarks(img, points, hands.HAND_CONNECTIONS)
-            pontos = []
-            #podemos enumerar esses pontos da seguinte forma
-            for id, cord in enumerate(points.landmark):
-                cx, cy = int(cord.x * w), int(cord.y * h)
-                #cv2.putText(img, str(id), (cx, cy + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-                pontos.append((cx,cy))
-
-            dedos = [8,12,16,20]
-            if pontos:
-                if pontos[4][0] < pontos[17][0]:
-                    if pontos[4][0] < pontos[2][0]:
-                        contador += 1
-                else:
-                    if pontos[4][0] > pontos[2][0]:
-                        contador += 1  
-                for x in dedos:
-                    if pontos[x][1] < pontos[x-2][1]:
-                        contador +=1
-
-        cv2.rectangle(img, (80, 10), (300,110), (255, 0, 0), -1)
-        cv2.putText(img,str(contador),(100,100),cv2.FONT_HERSHEY_SIMPLEX,4,(255,255,255),5)
+            mpDwaw.draw_landmarks(frame, points, hands.HAND_CONNECTIONS)
             
+            keyPoints = []
+            for cord in points.landmark:
+                cx, cy = int(cord.x * width), int(cord.y * height)
+                keyPoints.append((cx, cy)) 
+                        
+            fingersTips = [8, 12, 16, 20]  
+            for tip in fingersTips:
+                if keyPoints[tip][1] < keyPoints[tip - 2][1]:
+                    raisedFingers += 1
+            
+            if keyPoints[4][0] < keyPoints[17][0]:
+                if keyPoints[4][0] < keyPoints[2][0]:
+                    raisedFingers += 1
+            else:
+                if keyPoints[4][0] > keyPoints[2][0]:
+                    raisedFingers += 1
 
-    cv2.imshow('Imagem',img)
+        cv2.rectangle(frame, (80, 10), (300, 110), (255, 0, 0), -1)
+        cv2.putText(frame, str(raisedFingers), (100, 100), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 255, 255), 5)
+
+    cv2.imshow('Frame', frame)
     cv2.waitKey(1)
-
-
-
-#cv2.circle(img,(cx,cy),15,(0,255,0),cv2.FILLED)
-
-
-# for id,cord in enumerate(points.landmark):
-#     cx, cy = int(cord.x * w), int(cord.y * h)
-#     cv2.putText(img, str(id), (cx, cy + 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-#     pontos.append([cx,cy])
-#     if pontos:
-#         print(pontos)
