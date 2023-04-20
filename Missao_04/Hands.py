@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 
 class HandNumbers:
-
+        
     def start(self, camIndex):
         video = cv2.VideoCapture(camIndex)
 
@@ -16,6 +16,7 @@ class HandNumbers:
             results = Hands.process(frameRGB)
             height, width, _  = frame.shape
             handsLandmarks = results.multi_hand_landmarks
+            fingersTips = [8, 12, 16, 20] 
 
             if handsLandmarks:
                 raisedFingers = 0
@@ -26,18 +27,17 @@ class HandNumbers:
                         keyPoints.append((world_x, world_y))
                     
                     if self.handUp(keyPoints):
-                        mpDwaw.draw_landmarks(frame, Landmarks, hands.HAND_CONNECTIONS)    
-                                
-                        fingersTips = [8, 12, 16, 20]  
+                        mpDwaw.draw_landmarks(frame, Landmarks, hands.HAND_CONNECTIONS)         
+
                         for tip in fingersTips:
                             if self.fingerUp(keyPoints,tip):
                                 raisedFingers += 1
                     
                         if keyPoints[4][0] < keyPoints[17][0]:
-                            if keyPoints[4][0] < keyPoints[2][0]:
+                            if keyPoints[4][0] < keyPoints[3][0]:
                                 raisedFingers += 1
                         else:
-                            if keyPoints[4][0] > keyPoints[2][0]:
+                            if keyPoints[4][0] > keyPoints[3][0]:
                                 raisedFingers += 1
 
                 cv2.rectangle(frame, (80, 10), (300, 110), (255, 0, 0), -1)
@@ -47,14 +47,21 @@ class HandNumbers:
             cv2.imshow('Frame', frame)
             cv2.waitKey(1)
 
-    def handUp(keyPoints):
-            if keyPoints[0][1] < keyPoints[1][1]:
-                return True
-            else:
+    def handUp(self, keyPoints):
+            if keyPoints[0][1] < keyPoints[2][1]:
                 return False
+            elif keyPoints[1][1] < keyPoints[17][1]:
+                return False
+            else:
+                return True
 
-    def fingerUp(keyPoints, tip):
+    def fingerUp(self, keyPoints, tip):
         if keyPoints[tip][1] < keyPoints[tip-2][1]:
             return True
         else:
             return False
+        
+
+a = HandNumbers()
+a.start(0)
+
