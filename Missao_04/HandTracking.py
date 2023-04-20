@@ -2,10 +2,10 @@ import cv2
 import mediapipe as mp
 
 def main():
-    handNumbers = HandNumbers()
-    handNumbers.start(0)
+    handTracking = HandTracking()
+    handTracking.start(0)
 
-class HandNumbers:
+class HandTracking:
         
     def start(self, cam):
         video = cv2.VideoCapture(cam)
