@@ -12,15 +12,15 @@ while True:
     frameRGB = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
     results = Hands.process(frameRGB)
     height, width, _  = frame.shape
-    handPoints = results.multi_hand_landmarks
+    handsLandmarks = results.multi_hand_landmarks
 
-    if handPoints:
+    if handsLandmarks:
         raisedFingers = 0
-        for points in handPoints:
-            mpDwaw.draw_landmarks(frame, points, hands.HAND_CONNECTIONS)
+        for Landmarks in handsLandmarks:
+            mpDwaw.draw_landmarks(frame, Landmarks, hands.HAND_CONNECTIONS)
             
             keyPoints = []
-            for cord in points.landmark:
+            for cord in Landmarks.landmark:
                 cx, cy = int(cord.x * width), int(cord.y * height)
                 keyPoints.append((cx, cy)) 
                         
