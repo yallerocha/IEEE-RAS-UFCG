@@ -12,7 +12,7 @@ class HandNumbers:
 
         hands = mp.solutions.hands
         Hands = hands.Hands(max_num_hands = 2)
-        mpDwaw = mp.solutions.drawing_utils
+        mpDraw = mp.solutions.drawing_utils
 
         while True:
             success, frame = video.read()
@@ -24,10 +24,10 @@ class HandNumbers:
                 totalOpenFingers = 0
                 
                 for Landmarks in handsLandmarks:
-                    worldKeyPoints = self.__worldKeyPoints(frame, Landmarks)
+                    worldKeyPoints = self.__worldKeyPoints(frame, Landmarks.landmark)
                     
                     if self.__handUp(worldKeyPoints) == True:
-                        mpDwaw.draw_landmarks(frame, Landmarks, hands.HAND_CONNECTIONS)
+                        mpDraw.draw_landmarks(frame, Landmarks, hands.HAND_CONNECTIONS)
                         totalOpenFingers += self.__fingersOpen(worldKeyPoints)
                             
                 self.__digitalDisplay(frame, totalOpenFingers)
@@ -35,11 +35,11 @@ class HandNumbers:
             cv2.imshow('Frame', frame)
             cv2.waitKey(1)
             
-    def __worldKeyPoints(self, frame, Landmarks):
+    def __worldKeyPoints(self, frame, landmark):
         height, width, _  = frame.shape
         worldKeyPoints = []
         
-        for cord in Landmarks.landmark:
+        for cord in landmark:
             x, y = int(cord.x * width), int(cord.y * height)
             worldKeyPoints.append((x, y))
         
