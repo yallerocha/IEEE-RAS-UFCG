@@ -51,43 +51,58 @@ class HandTracking:
             cv2.imshow('Frame', frame)
             cv2.waitKey(1)
     
-    #       
+    #Uma função que converte as coordenadas especificas de tracking da mao em
+    #coordenadas globais, referentes a posicoes reais de pixels no frame:         
     def __worldKeyPoints(self, frame, landmark):
+        #Variaveis que guardam a altura e a largura do frame, respectivamente:
         height, width, _  = frame.shape
+        #Lista temporaria que guarda as coordenadas globais:
         worldKeyPoints = []
         
         for cord in landmark:
+            #Conversao dos eixos X e Y especificos para globais por meio da 
+            #multiplicação pelas dimensoes do frame:
             x, y = int(cord.x * width), int(cord.y * height)
+            #Adiciona a coordenada convertida na lista:
             worldKeyPoints.append((x, y))
         
         return worldKeyPoints
 
-    def __handUp(self, keyPoints):
-        if keyPoints[0][1] < keyPoints[2][1]:
+    #Funcao que verifica se a mao esta para cima, por meio de
+    #comparacoes entre as coordenadas dos pontos:
+    def __handUp(self, worldKeyPoints):
+        if worldKeyPoints[0][1] < worldKeyPoints[2][1]:
             return False
-        elif keyPoints[1][1] < keyPoints[17][1]:
+        elif worldKeyPoints[1][1] < worldKeyPoints[17][1]:
             return False
         else:
             return True
-
-    def __fingersOpen(self, keyPoints):
+    
+    #Funcao que verifica quantos dedos da mao estão abertos,
+    #por meio de comparacoes entre as coordenadas dos pontos:
+    def __fingersOpen(self, worldKeyPoints):
+        #Variavel temporaria que guarda o numero de dedos abertos:
         fingersOpen = 0
-        
+        #Lista que guarda o id das pontas dos dedos com eixo vertical:
         fingersTips = [8, 12, 16, 20]     
         for tip in fingersTips:
-            if keyPoints[tip][1] < keyPoints[tip-2][1]:
+            if worldKeyPoints[tip][1] < worldKeyPoints[tip-2][1]:
                 fingersOpen += 1
         
-        if keyPoints[4][0] < keyPoints[17][0]:
-            if keyPoints[4][0] < keyPoints[3][0]:
+        if worldKeyPoints[4][0] < worldKeyPoints[17][0]:
+            if worldKeyPoints[4][0] < worldKeyPoints[3][0]:
                 fingersOpen += 1
-        elif keyPoints[4][0] > keyPoints[3][0]:
+        elif worldKeyPoints[4][0] > worldKeyPoints[3][0]:
             fingersOpen += 1
                 
         return fingersOpen
     
+    #Funcao que desenha um display digital no frame que exibe o 
+    #numero de dedos abertos totais na imagem:
     def __digitalDisplay(self, frame, totalOpenFingers):
+        #Desenha um retangulo verde:
         cv2.rectangle(frame, (0, 0), (220, 120), (0, 200, 0), -1)
+        #Desenha a quantidade de dedos abertos:
         cv2.putText(frame, str(totalOpenFingers), (20, 100), cv2.FONT_HERSHEY_DUPLEX, 4, (255, 255, 255), 5)
 
 if __name__ == "__main__":
