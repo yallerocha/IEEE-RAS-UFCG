@@ -9,7 +9,7 @@ class HandTracking:
     
     #Funcao que inicia o tracking das maos:   
     def start(self, cam):
-        #Variavel que guarda o endereco da camera a ser utilizada:
+        #Variavel que guarda a camera a ser utilizada:
         video = cv2.VideoCapture(cam)
         #Variavel que guarda a solution hands do MediaPipe, que possibilita trabalhar com o tracking de maos:
         hands = mp.solutions.hands
