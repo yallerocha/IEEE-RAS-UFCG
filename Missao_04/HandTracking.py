@@ -7,7 +7,9 @@ def main():
 
 class HandTracking:
     
-    #Funcao que inicia o tracking das maos:   
+    #Funcao que inicia o rastreamento das mãos. Ele recebe como parâmetro o número da 
+    #câmera a ser utilizada (0 para câmera padrão do computador) e cria um loop infinito 
+    #para processar os frames do vídeo em tempo real.
     def start(self, cam):
         #Variavel que guarda a camera a ser utilizada:
         video = cv2.VideoCapture(cam)
