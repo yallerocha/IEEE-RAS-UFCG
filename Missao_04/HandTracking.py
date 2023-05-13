@@ -3,7 +3,7 @@ import mediapipe as mp
 
 def main():
     handTracking = HandTracking()
-    handTracking.start(0)
+    handTracking.start(0) 
 
 class HandTracking:
     
